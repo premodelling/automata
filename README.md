@@ -1,0 +1,2 @@
+# automata
+The Automata Project
