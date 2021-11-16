@@ -3,6 +3,7 @@
 # Created by: Think
 # Created on: 15/11/2021
 
+#' Automata Matrix Function
 AutomataMatrix <- function (iterations, tensor, FUN) {
 
   T <- tensor
