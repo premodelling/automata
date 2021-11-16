@@ -67,4 +67,7 @@ print(pattern)
 
 
 
+# Draw
+image(aperm(pattern), col = c('white', 'black'), axes = FALSE)
+
 
