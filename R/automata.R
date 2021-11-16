@@ -6,6 +6,8 @@
 source(file = 'R/functions/AutomataRule.R')
 source(file = 'R/functions/UpdateCell.R')
 source(file = 'R/functions/UpdateRow.R')
+source(file = 'R/functions/AutomataMatrix.R')
+source(file = 'R/functions/UpdateTensor.R')
 
 
 # Testing AutomataRule
@@ -25,18 +27,50 @@ tensor <- numeric(length = N)
 tensor[element] <- 1
 
 mapply(UpdateCell,
-       i = seq(from = 1, to = N),
+       index = seq(from = 1, to = N),
        MoreArgs = list('tensor' = tensor, 'FUN' = AutomataRule))
 
 
 # Testing UpdateRow
 iterations <- 3
-T <- c(0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0)
-while (iterations > 0) {
-  print(T)
+T <- tensor
+pattern <- tensor
+while (iterations > 1) {
   T <- UpdateRow(tensor = T, FUN = AutomataRule)
+  pattern <- rbind(pattern, T)
   iterations <- iterations - 1
 }
+print(pattern)
+
+
+
+# Tesing UpdateTensor
+iterations <- 3
+T <- tensor
+pattern <- tensor
+while (iterations > 1) {
+  T <- UpdateTensor(tensor = T, FUN = AutomataRule)
+  pattern <- rbind(pattern, T)
+  iterations <- iterations - 1
+}
+print(pattern)
+
+
+
+# Testing AutomataMatrix
+pattern <- AutomataMatrix(N = 13, tensor = tensor, FUN = AutomataRule)
+print(pattern)
+
+
+
+
+
+
+
+
+
+
+
 
 
 
