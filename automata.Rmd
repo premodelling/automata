@@ -1,0 +1,8 @@
+---
+title: "CHIC402/CHIC602 Coursework 3 - Cellular Automata"
+author: 36......
+output: 
+  pdf_document:
+    number_sections: true
+---
+
