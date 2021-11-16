@@ -58,21 +58,12 @@ print(pattern)
 
 
 # Testing AutomataMatrix
-pattern <- AutomataMatrix(N = 13, tensor = tensor, FUN = AutomataRule)
+N <- 21
+element <- median(c(1, N))
+tensor <- numeric(length = N)
+tensor[element] <- 1
+pattern <- AutomataMatrix(iterations = 10, tensor = tensor, FUN = AutomataRule)
 print(pattern)
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
