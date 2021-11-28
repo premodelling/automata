@@ -3,7 +3,8 @@
 # Created by: Think
 # Created on: 16/11/2021
 
-AutomataSummationRule <- function (i, j, k) {
+
+AutomataStateRule <- function (i, j, k) {
 
   if ( any( !( c(i, j, k) %in% c(0, 1) ) ) ) {
 
