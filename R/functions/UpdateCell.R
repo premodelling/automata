@@ -8,7 +8,7 @@
 #'
 #' @description For determining the state of a new/next generation cell
 #'
-#' @param index: The row index of the next generation cell whose state is being determined
+#' @param index: The row index of the next generation cell whose state is being determined.
 #' @param tensor: The row vector that is updating the cells of the next generation.
 #' @param FUN: The function of an automata rule.
 #'
