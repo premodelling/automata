@@ -10,7 +10,7 @@ UpdateRowIndependent <- function (tensor, FUN) {
 
 
   # The length of the tensor (N) and a
-  # cyclically shifted vector of indices (R) for ...
+  # cyclically shifted vector of indices (R) ... it ensures that index - 1 picks the last ... if index == 1
   N <- length(tensor)
   R <- c(N, seq(from = 1, to = N - 1))
 
