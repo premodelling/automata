@@ -1,8 +1,94 @@
 ---
 title: "CHIC402/CHIC602 Coursework 3 - Cellular Automata"
-author: 36......
+author: 36112985
 output: 
   pdf_document:
     number_sections: true
 ---
+
+
+<!--- global settings --->
+```{r include = FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+<!--- libraries --->
+```{r}
+library(dplyr)
+library(ggplot2)
+library(stringr)
+library(latex2exp)
+```
+
+
+<!--- custom functions --->
+```{r}
+source(file = 'R/functions/AutomataRule.R')
+source(file = 'R/functions/UpdateCell.R')
+source(file = 'R/functions/UpdateRow.R')
+source(file = 'R/functions/UpdateTensor.R')
+source(file = 'R/functions/AutomataMatrix.R')
+source(file = 'R/functions/AutomataModuloRule.R')
+source(file = 'R/functions/AutomataRandomRule.R')
+source(file = 'R/functions/AutomataSummationRule.R')
+```
+
+## Testing
+
+### Automata Rule Function
+```{r}
+mapply(AutomataRule,
+       i = c(0, 0, 0, 0, 1, 1, 1, 1),
+       j = c(0, 0, 1, 1, 0, 0, 1, 1),
+       k = c(0, 1, 0, 1, 0, 1, 0, 1))
+```
+
+
+### Update Cell Function
+
+```{r}
+N <- 11
+element <- median(c(1, N))
+tensor <- numeric(length = N)
+tensor[element] <- 1
+
+mapply(UpdateCell,
+       index = seq(from = 1, to = N),
+       MoreArgs = list('tensor' = tensor, 'FUN' = AutomataRule))
+```
+
+
+### Row Updating Functions
+
+There are two options
+
+**UpdateCell()** independent
+
+```{r}
+iterations <- 3
+T <- tensor
+pattern <- tensor
+while (iterations > 1) {
+  T <- UpdateRow(tensor = T, FUN = AutomataRule)
+  pattern <- rbind(pattern, T)
+  iterations <- iterations - 1
+}
+print(pattern)
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
