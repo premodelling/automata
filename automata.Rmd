@@ -14,7 +14,7 @@ knitr::opts_chunk$set(echo = FALSE)
 
 
 <!--- libraries --->
-```{r}
+```{r include = FALSE}
 library(dplyr)
 library(ggplot2)
 library(stringr)
@@ -23,31 +23,70 @@ library(latex2exp)
 
 
 <!--- custom functions --->
-```{r}
-source(file = 'R/functions/AutomataRule.R')
-source(file = 'R/functions/UpdateCell.R')
-source(file = 'R/functions/UpdateRowIndependent.R')
-source(file = 'R/functions/UpdateRowDependent.R')
-source(file = 'R/functions/AutomataMatrix.R')
-source(file = 'R/functions/AutomataModuloRule.R')
-source(file = 'R/functions/AutomataRandomRule.R')
-source(file = 'R/functions/AutomataSummationRule.R')
+```{r include = FALSE}
+sys.source(file = 'R/functions/AutomataRule.R', envir = knitr::knit_global())
+sys.source(file = 'R/functions/UpdateCell.R', envir = knitr::knit_global())
+
+sys.source(file = 'R/functions/UpdateRowIndependent.R', envir = knitr::knit_global())
+sys.source(file = 'R/functions/UpdateRowDependent.R', envir = knitr::knit_global())
+sys.source(file = 'R/functions/UpdateTensor.R', envir = knitr::knit_global())
+
+sys.source(file = 'R/functions/AutomataMatrix.R', envir = knitr::knit_global())
+sys.source(file = 'R/functions/AutomataModuloRule.R', envir = knitr::knit_global())
+sys.source(file = 'R/functions/AutomataRandomRule.R', envir = knitr::knit_global())
+sys.source(file = 'R/functions/AutomataStateRule.R', envir = knitr::knit_global())
+sys.source(file = 'R/functions/AutomataExperiment.R', envir = knitr::knit_global())
 ```
 
-## Testing
+\textcolor[rgb]{0.3, 0.3, 0.3}{The focus of this programming project is Cellular Automata, or more specifically Elementary Cellular Automata.  In general, a cellular automaton is a ....  After randomly or deterministically initialising a grid of cells, a cellular automaton determines the state of a new cell via (a) a defined rule, and (b) the state of a specific set of cells.
 
-### Automata Rule Function
+In the case of elementary cellular automata.  The initial grid is a row vector, and each cell has only two possible states: 0 or 1.  The initial row vector can be a randomly or deterministically created grid of ones & zeros.  Thereafter, each cell of the next generation, i.e., each cell of the next row down, depends on specific cells in the current/active row.
+
+The project creates functions for elementary cellular automata, including
+
+* automata rule functions
+* a generic cell updating function; updates cells according to a provided rule
+* a generic row updating function; which creates a next generation row w.r.t **(a)** a current/active row, and **(b)** a provided rule
+* a generic automata matrix; which creates the matrix that underpins each static cellular automaton image
+
+}
+
+\vspace{35pt}
+
+# Automata Matrix Fundamentals
+
+The cellular automata's matrix patterns depend on automata rules, and correct cell and/or row updating functions.  That is the focus of this section.
+
+\vspace{20pt}
+
+## Automata Rule Thirty Function
+
+An automata rule is a rule that dictates the state of a new cell.  Automata Rule Thirty dictates the state of a new cell w.r.t. the three adjacent cells in the previous row.  The variable *reference* encodes the possible state combinations of the three cells
+
 ```{r}
-mapply(AutomataRule,
-       i = c(0, 0, 0, 0, 1, 1, 1, 1),
-       j = c(0, 0, 1, 1, 0, 0, 1, 1),
-       k = c(0, 1, 0, 1, 0, 1, 0, 1))
+reference <- data.frame(i = c(0, 0, 0, 0, 1, 1, 1, 1),
+                        j = c(0, 0, 1, 1, 0, 0, 1, 1),
+                        k = c(0, 1, 0, 1, 0, 1, 0, 1))
+knitr::kable(reference, caption = 'The possible 0/1 state combinations of 3 adjacent cells')
 ```
 
+According to Automata Rule Thirty, the state of a new cell w.r.t. the reference combinations is
 
-### Update Cell Function
+```{r comment = '         '}
+states <- reference %>%
+        mutate(state = mapply(FUN = AutomataRule, i = i, j = j, k = k))
+knitr::kable(states, caption = 'The state of a new cell w.r.t. Automata Rule Thirty')
+```
 
-```{r}
+Now, a cell updating function can be created via this table of rules.
+
+\vspace{20pt}
+
+## Update Cell Function
+
+
+
+```{r comment = '         '}
 N <- 11
 element <- median(c(1, N))
 tensor <- numeric(length = N)
@@ -58,37 +97,133 @@ mapply(UpdateCell,
        MoreArgs = list('tensor' = tensor, 'FUN' = AutomataRule))
 ```
 
+\vspace{20pt}
 
-### Row Updating Functions
-
-There are two options
-
-**UpdateCell()** independent
+## Row Updating Functions
 
 ```{r}
 iterations <- 3
-T <- tensor
-pattern <- tensor
-while (iterations > 1) {
-  T <- UpdateRow(tensor = T, FUN = AutomataRule)
-  pattern <- rbind(pattern, T)
-  iterations <- iterations - 1
-}
-print(pattern)
+```
+
+There are 2 row updating functions available
+
+* $UpdateRowIndependent( )$: does not depend on the $UpdateCell( )$ function, whilst
+* $UpdateRowDependent( )$: depends on $UpdateCell( )$
+
+Regardless, their results are the same.  Both are tested here via $UpdateTensor( )$
+
+\vspace{10pt}
+
+**UpdateRowIndependent**
+
+```{r comment = '         '}
+UpdateTensor(iterations = 3, tensor = tensor, FUN = UpdateRowIndependent)
+```
+
+\vspace{10pt}
+
+**UpdateRowDependent**
+
+```{r comment = '         '}
+UpdateTensor(iterations = 3, tensor = tensor, FUN = UpdateRowDependent)
 ```
 
 
+## The Matrix Function
+
+```{r}
+# Testing AutomataMatrix
+N <- 21
+element <- median(c(1, N))
+tensor <- numeric(length = N)
+tensor[element] <- 1
+pattern <- AutomataMatrix(iterations = 10, tensor = tensor, FUN = AutomataRule)
+```
+
+\vspace{10pt}
+
+\tiny
+<!--- the numeric pattern --->
+```{r comment = '         '}
+# as.character(start:end)
+# sprintf('%02d', start:end)
+prmatrix(pattern, rowlab = rep('', nrow(pattern)), collab = rep('', ncol(pattern)))
+```
+\normalsize
+
+\vspace{35pt}
+
+# The Image Of a Matrix
+
+<!--- the image of the pattern --->
+```{r fig.width = 3, fig.height = 6, fig.align = 'center', out.extra = 'angle=-90'}
+image(pattern, col = c('white', 'black'), axes = FALSE)
+```
+
+\vspace{20pt}
+
+## Random Start
 
 
+```{r}
+N <- 50
+tensor <- sample(x = 0:1, size = N, replace = TRUE, prob = c('0' = 0.5, '1' = 0.5))
+randomstart <- AutomataMatrix(iterations = 25, tensor = tensor, FUN = AutomataRule)
+```
 
 
+```{r fig.width = 3, fig.height = 6, fig.align = 'center', out.extra = 'angle=-90'}
+image(randomstart, col = c('white', 'black'), axes = FALSE)
+```
+
+\vspace{35pt}
+
+# A New Rule
+
+Readers have access to three of the tried rules via the functions
+
+* *AutomataStateRule( )*
+* *AutomataRandomRule( )*
+* *AutomataModuloRule( )*
+
+which are listed within the *functions* directory. However, the focus herein is *AutomataStateRule( )*.
+
+\vspace{20pt}
+
+## The Automata State Rule
+
+The *AutomataStateRule( )* is based on the sum of the 0/1 states of the three cells that dictate the state of a new cell.  It is
+
+$$sum(i, j, k) %% 2$$
+
+Hence,
+
+```{r}
+states <- reference %>%
+        mutate(state = mapply(FUN = AutomataStateRule, i = i, j = j, k = k))
+knitr::kable(states, caption = 'The state of a new cell w.r.t. Automata State Rule')
+```
+
+\vspace{20pt}
+
+## Exploring the Automata State Rule
+
+In addition to a rule, the pattern of an automata matrix, and the richness or peculiarity of the pattern, also depends on the starting row's
+
+* pattern, or otherwise, of zeros & ones
+* length
+
+Noting that the extent to which a pattern/anything can be discerned depends on the number of automata matrix rows, i.e., the number of iterations.  Hence, herein a rule's automata matrix/image depends on, and is created w.r.t
+
+* Starting row length
+* The distribution of zeros & ones in the starting row ... example -> c('0' = 0.95, '1' = 0.05)
+* The number of automata matrix rows, including the starting row
+* An automata rule
+
+The *AutomataExperiment( )* function encodes this set-up. Now, an Automata State Rule image example:
 
 
-
-
-
-
-
-
-
+```{r fig.width = 3, fig.height = 6, fig.align = 'center', out.extra = 'angle=-90'}
+AutomataExperiment(N = 49, prob = c('0' = 0.95, '1' = 0.05), iterations = 25, FUN = AutomataStateRule)
+```
 
