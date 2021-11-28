@@ -1,6 +1,6 @@
 # Title     : Automata Random Rule
 # Objective : A new automata rule
-# Created by: Think
+# Created by: 36112985
 # Created on: 16/11/2021
 
 
