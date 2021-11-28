@@ -12,6 +12,8 @@ source(file = 'R/functions/AutomataModuloRule.R')
 source(file = 'R/functions/AutomataRandomRule.R')
 source(file = 'R/functions/AutomataSummationRule.R')
 
+source(file = 'R/functions/UpdateTE.R')
+
 
 
 # Testing AutomataRule
@@ -56,6 +58,10 @@ while (iterations > 1) {
 }
 print(pattern)
 
+
+# Testing either
+UpdateTE(iterations = 3, tensor = tensor, FUN = UpdateRow)
+UpdateTE(iterations = 3, tensor = tensor, FUN = UpdateTensor)
 
 
 # Testing AutomataMatrix
