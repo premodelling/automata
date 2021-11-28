@@ -1,6 +1,6 @@
 # Title     : Automata Rule
 # Objective : Automata Rule
-# Created by: Think
+# Created by: 36112985
 # Created on: 15/11/2021
 
 
