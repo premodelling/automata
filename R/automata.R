@@ -34,32 +34,8 @@ mapply(UpdateCell,
        MoreArgs = list('tensor' = tensor, 'FUN' = AutomataRule))
 
 
-# Testing UpdateRow
-iterations <- 3
-T <- tensor
-pattern <- tensor
-while (iterations > 1) {
-  T <- UpdateRow(tensor = T, FUN = AutomataRule)
-  pattern <- rbind(pattern, T)
-  iterations <- iterations - 1
-}
-print(pattern)
-
-
-
-# Testing UpdateTensor
-iterations <- 3
-T <- tensor
-pattern <- tensor
-while (iterations > 1) {
-  T <- UpdateTensor(tensor = T, FUN = AutomataRule)
-  pattern <- rbind(pattern, T)
-  iterations <- iterations - 1
-}
-print(pattern)
-
-
 # Testing either
+iterations <- 3
 UpdateTE(iterations = 3, tensor = tensor, FUN = UpdateRow)
 UpdateTE(iterations = 3, tensor = tensor, FUN = UpdateTensor)
 
