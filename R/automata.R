@@ -1,6 +1,6 @@
 # Title     : Automata
 # Objective : Automata
-# Created by: Think
+# Created by: 36112985
 # Created on: 15/11/2021
 
 source(file = 'R/functions/AutomataRule.R')
