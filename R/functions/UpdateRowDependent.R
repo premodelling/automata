@@ -1,11 +1,18 @@
 # Title     : Update Row Dependent
 # Objective : Update automata rows via the UpdateCell() function
-# Created by: Think
+# Created by: 36112985
 # Created on: 16/11/2021
 
 
-#' @param tensor: the row vector that will update the next row
-#' @param FUN: the function of an automata rule type
+#' UpdateRowDependent
+#'
+#' @description For creating the new/next row vector of a cellular automaton
+#'
+#' @param tensor: The row vector that will update the next row.
+#' @param FUN: The function of an automata rule.
+#'
+#' @return The new/next row vector, i.e., the cellular automaton's next generation row.
+#'
 UpdateRowDependent <- function (tensor, FUN) {
 
   return (mapply(UpdateCell,
