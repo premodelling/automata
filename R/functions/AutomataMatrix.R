@@ -20,7 +20,7 @@ AutomataMatrix <- function (iterations, tensor, FUN) {
   T <- tensor
   pattern <- tensor
   while (iterations > 1) {
-    T <- UpdateRow(tensor = T, FUN = FUN)
+    T <- UpdateRowIndependent(tensor = T, FUN = FUN)
     pattern <- rbind(pattern, T)
     iterations <- iterations - 1
   }
