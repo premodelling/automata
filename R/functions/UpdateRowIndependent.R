@@ -6,12 +6,12 @@
 
 #' UpdateRowIndependent
 #'
-#' @description For creating the new/next row vector of a cellular automaton
+#' @description For creating the new/next generation row vector of a cellular automaton
 #'
-#' @param tensor: The row vector that will update the next row.
+#' @param tensor: The row vector that will determine the states of the new/next generation row vector.
 #' @param FUN: The function of an automata rule.
 #'
-#' @return The new/next row vector, i.e., the cellular automaton's next generation row.
+#' @return The new/next generation row vector.
 #'
 UpdateRowIndependent <- function (tensor, FUN) {
 
