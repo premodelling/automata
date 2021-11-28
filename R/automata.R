@@ -13,8 +13,15 @@ source(file = 'R/functions/UpdateTensor.R')
 source(file = 'R/functions/AutomataMatrix.R')
 source(file = 'R/functions/AutomataModuloRule.R')
 source(file = 'R/functions/AutomataRandomRule.R')
-source(file = 'R/functions/AutomataSummationRule.R')
+source(file = 'R/functions/AutomataStateRule.R')
 source(file = 'R/functions/AutomataExperiment.R')
+
+
+
+# Reference
+reference <- data.frame(i = c(0, 0, 0, 0, 1, 1, 1, 1),
+                        j = c(0, 0, 1, 1, 0, 0, 1, 1),
+                        k = c(0, 1, 0, 1, 0, 1, 0, 1))
 
 
 # Testing AutomataRule
@@ -22,7 +29,8 @@ mapply(AutomataRule,
        i = c(0, 0, 0, 0, 1, 1, 1, 1),
        j = c(0, 0, 1, 1, 0, 0, 1, 1),
        k = c(0, 1, 0, 1, 0, 1, 0, 1))
-
+reference %>%
+  mutate(state = mapply(FUN = AutomataRule, i = i, j = j, k = k))
 
 # Testing UpdateCell
 N <- 11
@@ -71,19 +79,26 @@ mapply(AutomataModuloRule,
        i = c(0, 0, 0, 0, 1, 1, 1, 1),
        j = c(0, 0, 1, 1, 0, 0, 1, 1),
        k = c(0, 1, 0, 1, 0, 1, 0, 1))
+reference %>%
+  mutate(state = mapply(FUN = AutomataModuloRule, i = i, j = j, k = k))
 
 # AutomataRandomRule
 mapply(AutomataRandomRule,
        i = c(0, 0, 0, 0, 1, 1, 1, 1),
        j = c(0, 0, 1, 1, 0, 0, 1, 1),
        k = c(0, 1, 0, 1, 0, 1, 0, 1))
+reference %>%
+  mutate(state = mapply(FUN = AutomataRandomRule, i = i, j = j, k = k))
 
-# AutomataSummationRule
-mapply(AutomataSummationRule,
+# AutomataStateRule
+mapply(AutomataStateRule,
        i = c(0, 0, 0, 0, 1, 1, 1, 1),
        j = c(0, 0, 1, 1, 0, 0, 1, 1),
        k = c(0, 1, 0, 1, 0, 1, 0, 1))
+reference %>%
+  mutate(state = mapply(FUN = AutomataStateRule, i = i, j = j, k = k))
+
 
 # Try
-AutomataExperiment(N = 49, prob = c('0' = 0.95, '1' = 0.05), iterations = 25, FUN = AutomataSummationRule)
+AutomataExperiment(N = 49, prob = c('0' = 0.95, '1' = 0.05), iterations = 25, FUN = AutomataStateRule)
 
