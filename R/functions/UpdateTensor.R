@@ -1,18 +1,18 @@
 # Title     : Update Tensor
-# Objective : For testing the row updating functions UpdateRowIndependent() & UpdateRowDependent()
+# Objective : For testing the cellular automaton row functions UpdateRowIndependent() & UpdateRowDependent()
 # Created by: 36112985
 # Created on: 28/11/2021
 
 
 #' UpdateTensor
 #'
-#' @description For testing the row updating functions UpdateRowIndependent() & UpdateRowDependent()
+#' @description For testing the cellular automaton row functions UpdateRowIndependent() & UpdateRowDependent()
 #'
-#' @param iterations: the number of rows, including 'tensor', to preview
-#' @param tensor: the row vector that will update the next row
-#' @param FUN: the function of an automata rule type
+#' @param iterations: The number of rows, including 'tensor', to preview.
+#' @param tensor: The row vector that will determine the states of the new/next generation row vector.
+#' @param FUN: The function of an automata rule.
 #'
-#' @note Only prints a pattern, no return
+#' @note Only prints a pattern, no return.
 #'
 #' @return
 #'
