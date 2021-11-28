@@ -5,8 +5,8 @@
 
 source(file = 'R/functions/AutomataRule.R')
 source(file = 'R/functions/UpdateCell.R')
-source(file = 'R/functions/UpdateRow.R')
-source(file = 'R/functions/UpdateTensor.R')
+source(file = 'functions/UpdateRowIndependent.R')
+source(file = 'functions/UpdateRowDependent.R')
 source(file = 'R/functions/AutomataMatrix.R')
 source(file = 'R/functions/AutomataModuloRule.R')
 source(file = 'R/functions/AutomataRandomRule.R')
@@ -36,8 +36,8 @@ mapply(UpdateCell,
 
 # Testing either
 iterations <- 3
-UpdateTE(iterations = 3, tensor = tensor, FUN = UpdateRow)
-UpdateTE(iterations = 3, tensor = tensor, FUN = UpdateTensor)
+UpdateTE(iterations = 3, tensor = tensor, FUN = UpdateRowIndependent)
+UpdateTE(iterations = 3, tensor = tensor, FUN = UpdateRowDependent)
 
 
 # Testing AutomataMatrix
