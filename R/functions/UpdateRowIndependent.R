@@ -1,12 +1,12 @@
 # Title     : Update Row
-# Objective : Update Row
+# Objective : Update automata rows independent of, without using, external function UpdateCell()
 # Created by: Think
 # Created on: 15/11/2021
 
 
 #' @param tensor: the row vector that will update the next row
 #' @param FUN: the function of an automata rule type
-UpdateRow <- function (tensor, FUN) {
+UpdateRowIndependent <- function (tensor, FUN) {
 
 
   # The length of the tensor (N) and a
