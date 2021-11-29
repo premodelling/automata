@@ -1,26 +1,27 @@
 # Title     : Automata Matrix
 # Objective : Automata Matrix
-# Created by: Think
+# Created by: 36112985
 # Created on: 15/11/2021
 
-#' Automata Matrix
+
+#' AutomataMatrix
 #'
-#' @description Creates a cellular automata matrix w.r.t. a automata rule function, a
-#'              starting array, and an iterations value that dictates the number of
-#'              automata arrays.
+#' @description Creates a cellular automaton matrix w.r.t. an automaton rule function, a
+#'              starting row vector, and an iterations value that dictates the number of
+#'              automaton row vectors.
 #'
-#' @param iterations: the number of cellular automata arrays to be created
-#' @param tensor: the starting array
-#' @param FUN: the update rule function
+#' @param iterations: The number of cellular automaton row vectors, including 'tensor', to be created.
+#' @param tensor: The starting row vector.
+#' @param FUN: The update rule function
 #'
-#' @return a cellular automata matrix/pattern
+#' @return a cellular automaton matrix/pattern
 #'
 AutomataMatrix <- function (iterations, tensor, FUN) {
 
   T <- tensor
   pattern <- tensor
   while (iterations > 1) {
-    T <- UpdateRow(tensor = T, FUN = FUN)
+    T <- UpdateRowIndependent(tensor = T, FUN = FUN)
     pattern <- rbind(pattern, T)
     iterations <- iterations - 1
   }

@@ -1,4 +1,4 @@
-# Title     : Automata Modulo Rule
+# Title     : Automata Summation Rule
 # Objective : A new automata rule
 # Created by: 36112985
 # Created on: 16/11/2021
@@ -11,7 +11,7 @@
 #' @return: The state of the new generation cell that is adjacent to the three cells.  A new generation cell
 #'          is a cell in the new/next row down.
 #'
-AutomataModuloRule <- function (i, j, k) {
+AutomataStateRule <- function (i, j, k) {
 
   if ( any( !( c(i, j, k) %in% c(0, 1) ) ) ) {
 
@@ -19,9 +19,7 @@ AutomataModuloRule <- function (i, j, k) {
 
   } else {
 
-    decimal <-  (i * 2^2) + (j * 2) + (k * 1)
-
-    return(decimal %% 2)
+    return(sum(i, j, k) %% 2)
 
   }
 

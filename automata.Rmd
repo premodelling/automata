@@ -1,8 +1,277 @@
 ---
 title: "CHIC402/CHIC602 Coursework 3 - Cellular Automata"
-author: 36......
+author: 36112985
 output: 
   pdf_document:
     number_sections: true
 ---
+
+
+<!--- global settings --->
+```{r include = FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+
+<!--- libraries --->
+```{r include = FALSE}
+library(dplyr)
+library(ggplot2)
+library(stringr)
+library(latex2exp)
+library(tufte)
+```
+
+
+<!--- custom functions --->
+```{r include = FALSE}
+sys.source(file = 'R/functions/AutomataRule.R', envir = knitr::knit_global())
+sys.source(file = 'R/functions/UpdateCell.R', envir = knitr::knit_global())
+
+sys.source(file = 'R/functions/UpdateRowIndependent.R', envir = knitr::knit_global())
+sys.source(file = 'R/functions/UpdateRowDependent.R', envir = knitr::knit_global())
+sys.source(file = 'R/functions/UpdateTensor.R', envir = knitr::knit_global())
+
+sys.source(file = 'R/functions/AutomataMatrix.R', envir = knitr::knit_global())
+sys.source(file = 'R/functions/AutomataModuloRule.R', envir = knitr::knit_global())
+sys.source(file = 'R/functions/AutomataRandomRule.R', envir = knitr::knit_global())
+sys.source(file = 'R/functions/AutomataStateRule.R', envir = knitr::knit_global())
+sys.source(file = 'R/functions/AutomataExperiment.R', envir = knitr::knit_global())
+```
+
+The focus of this programming project is Cellular Automata, or more specifically Elementary Cellular Automata.  In Statistical Mechanics of Cellular Automata, Stephen Wolfram states that^[[Statistical mechanics of cellular automata](https://doi.org/10.1103/RevModPhys.55.601), Stephen Wolfram, Reviews of Modern Physics 55, 601]
+
+> *Cellular automata are mathematical idealizations of physical systems in which space and time are discrete, and physical quantities take on a finite set of discrete values. A cellular automaton consists of a regular uniform lattice (or "array"), usually infinite in extent, with a discrete variable at each site ("cell").*
+>
+> `r tufte::quote_footer('--- Stephen Wolfram, Statistical Mechanics of Cellular Automata')`
+
+Additionally
+
+> *A cellular automaton evolves in discrete time steps, with the value of the variable at one site being affected by the values of variables at sites in its "neighborhood" on the previous time step.*
+>
+> `r tufte::quote_footer('--- Stephen Wolfram, Statistical Mechanics of Cellular Automata')`
+
+In general, after randomly or deterministically initialising a grid of cells, a cellular automaton determines the state of a new cell via **(a)** a defined rule, and **(b)** the state of a specific set of cells.
+
+In the case of elementary cellular automata.  The initial grid is a row vector, and each cell has only two possible states: 0 or 1.  The initial row vector can be a randomly or deterministically created grid of zeros \& ones.  Thereafter, the state of each next generation cell, i.e., each cell of the next row down, depends on a defined elementary cellular automaton rule & specific cells in the current/active row.  The project creates functions for exploring elementary cellular automata, including
+
+* Elementary cellular automata rules functions.
+* A generic cell updating function that updates cells according to a provided rule; *UpdateCell( )*
+* A generic row updating function that creates a next generation row w.r.t **(a)** a current/active row, and **(b)** a provided rule.
+* A generic automata matrix function that creates the matrix that underpins each static cellular automaton image.
+
+The exploration of elementary cellular automata is via **(a)** Wolfram's Rule 30 (Rule Thirty), and **(b)** newly created custom rules.^[Rule 30 is decscribed in [Statistical mechanics of cellular automata](https://doi.org/10.1103/RevModPhys.55.601)]
+
+\vspace{35pt}
+
+# A Reference Frame
+
+In this document, each outlined elementary cellular automaton rule determines the state of a next generation cell via the same set of active/current row vector cells.  In brief, each new generation cell depends on the state of three cells of the preceding generation, as illustrated in *Fig. 1*.
+
+```{r cells, fig.align = 'center', out.width = '65%', echo=FALSE, fig.cap = 'The cells that determine the state of a next generation cell'}
+knitr::include_graphics(path = './images/cell.png', auto_pdf = TRUE)
+```
+
+Bearing *Fig. 1* in mind, and noting that an elementary automaton cell only has 2 possible states: 0 or 1.  Then there are $2^{3}$ possible combinations of zeros & ones w.r.t. 3 contiguous cells.  These $2^{3}$ state combinations form the reference frame of each elementary cellular automaton rule in this document.  *Table 1* outlines the combination; not that $i$, $j$, and $k$ denote
+
+* i: the state of the first of three contiguous cells of a row vector.
+* j: the state of the second of three contiguous cells of a row vector.
+* k: the state of the third of three contiguous cells of a row vector.
+
+Contiguity w.r.t. edge cells is as illustrated in *Fig. 1*.
+
+```{r}
+reference <- data.frame(i = c(0, 0, 0, 0, 1, 1, 1, 1),
+                        j = c(0, 0, 1, 1, 0, 0, 1, 1),
+                        k = c(0, 1, 0, 1, 0, 1, 0, 1))
+knitr::kable(reference, caption = 'The eight possible 0/1 state combinations of 3 cotiguous cells')
+```
+
+The document's examples illustrate that the rules can be differentiated in terms of the set of states they create in relation to the reference frame.
+
+\vspace{35pt}
+
+# Automata Matrix Fundamentals
+
+Next, this section describes a set of functions that are used to create the matrix of an elementary cellular automaton.
+
+\vspace{20pt}
+
+## Automaton Rule 30 Function
+
+We need a rule to determine the state of a next generation cell, based on the cells of the active/current row, as illustrated in *Fig. 1*.  Wolfram's Rule 30 is one of a number of elementary automaton rules for determining the state of a next generation cell.  Herein, Rule 30 is encoded in the function *AutomataRule( )*.  The state of a new generation cell due to Rule 30, and the reference frame, is
+
+```{r echo = TRUE}
+states <- reference %>%
+        mutate(state = mapply(FUN = AutomataRule, i = i, j = j, k = k))
+knitr::kable(states, caption = "The state of a new cell w.r.t. Wolfram's Rule 30")
+```
+
+Now, we have a rule for a cell updating function.
+
+\vspace{20pt}
+
+## Update Cell Function
+
+The cell update function *UpdateCell( )* uses an elementary cellular automaton rule function to assign a state to a new generation cell.  In this example, a starting row of length $11$ is created, and the *UpdateCell( )* function sets the state of each next generation cell via the Rule 30 function, i.e., via the *AutomataRule( )* function.
+
+\footnotesize
+
+```{r comment = '         ', echo = TRUE}
+# A starting row of an elementary cellular automaton
+N <- 11
+element <- floor(median(c(1, N)))
+tensor <- numeric(length = N)
+tensor[element] <- 1
+
+# Then, the state of the cells of the next generation, i.e., row 2, w.r.t.
+# starting row 'tensor' and rule function 'AutomataRule( )'
+latest <- mapply(UpdateCell,
+       index = seq(from = 1, to = N),
+       MoreArgs = list('tensor' = tensor, 'FUN' = AutomataRule))
+
+```
+
+\normalsize
+
+The starting row:
+```{r comment = '         '}
+tensor
+```
+
+The next generation
+```{r comment = '         '}
+latest
+```
+
+\vspace{20pt}
+
+## Row Updating Functions
+
+A row updating function sets the state of an entire new generation row.  There are 2 row updating functions available
+
+* *UpdateRowIndependent( )*: This function does not depend on the external *UpdateCell( )* function.
+* *UpdateRowDependent( )*: This function depends on the *UpdateCell( )* function.
+
+Regardless, their results are the same.  Both are tested here via *UpdateTensor( )*, which is used to create a three-row automaton matrix as instructed in the project brief.  In-line with the project brief, the three-row matrix will be based on the previously created starting row vector.
+
+\vspace{10pt}
+
+```{r}
+iterations <- 3
+```
+
+
+**UpdateRowIndependent**
+
+```{r comment = '         '}
+UpdateTensor(iterations = 3, tensor = tensor, FUN = UpdateRowIndependent, rule = AutomataRule)
+```
+
+\vspace{10pt}
+
+**UpdateRowDependent**
+
+```{r comment = '         '}
+UpdateTensor(iterations = 3, tensor = tensor, FUN = UpdateRowDependent, rule = AutomataRule)
+```
+
+
+## The Matrix Function
+
+```{r}
+# Testing AutomataMatrix
+N <- 21
+element <- median(c(1, N))
+tensor <- numeric(length = N)
+tensor[element] <- 1
+pattern <- AutomataMatrix(iterations = 10, tensor = tensor, FUN = AutomataRule)
+```
+
+\vspace{10pt}
+
+\tiny
+<!--- the numeric pattern --->
+```{r comment = '         ', fig.align = 'center'}
+# as.character(start:end)
+# sprintf('%02d', start:end)
+prmatrix(pattern, rowlab = rep('', nrow(pattern)), collab = rep('', ncol(pattern)))
+```
+\normalsize
+
+\vspace{35pt}
+
+# The Image Of a Matrix
+
+<!--- the image of the pattern --->
+```{r fig.width = 3, fig.height = 6, fig.align = 'center', out.extra = 'angle=-90'}
+image(pattern, col = c('white', 'black'), axes = FALSE)
+```
+
+\vspace{20pt}
+
+## Random Start
+
+
+```{r}
+N <- 50
+tensor <- sample(x = 0:1, size = N, replace = TRUE, prob = c('0' = 0.5, '1' = 0.5))
+randomstart <- AutomataMatrix(iterations = 25, tensor = tensor, FUN = AutomataRule)
+```
+
+
+```{r fig.width = 3, fig.height = 6, fig.align = 'center', out.extra = 'angle=-90'}
+image(randomstart, col = c('white', 'black'), axes = FALSE)
+```
+
+\vspace{35pt}
+
+# A New Rule
+
+Readers have access to three of the tried rules via the functions
+
+* *AutomataStateRule( )*
+* *AutomataRandomRule( )*
+* *AutomataModuloRule( )*
+
+which are listed within the *functions* directory. However, the focus herein is *AutomataStateRule( )*.
+
+\vspace{20pt}
+
+## The Automata State Rule
+
+The *AutomataStateRule( )* is based on the sum of the 0/1 states of the three cells that dictate the state of a new cell.  It is
+
+$$sum(i, j, k) %% 2$$
+
+Hence,
+
+```{r}
+states <- reference %>%
+        mutate(state = mapply(FUN = AutomataStateRule, i = i, j = j, k = k))
+knitr::kable(states, caption = 'The state of a new cell w.r.t. Automata State Rule')
+```
+
+\vspace{20pt}
+
+## Exploring the Automata State Rule
+
+In addition to a rule, the pattern of an automata matrix, and the richness or peculiarity of the pattern, also depends on the starting row's
+
+* pattern, or otherwise, of zeros & ones
+* length
+
+Noting that the extent to which a pattern/anything can be discerned depends on the number of automata matrix rows, i.e., the number of iterations.  Hence, herein a rule's automata matrix/image depends on, and is created w.r.t
+
+* Starting row length
+* The distribution of zeros & ones in the starting row ... example -> c('0' = 0.95, '1' = 0.05)
+* The number of automata matrix rows, including the starting row
+* An automata rule
+
+The *AutomataExperiment( )* function encodes this set-up. Now, an Automata State Rule image example:
+
+
+```{r fig.width = 3, fig.height = 6, fig.align = 'center', out.extra = 'angle=-90'}
+AutomataExperiment(N = 49, prob = c('0' = 0.95, '1' = 0.05), iterations = 25, FUN = AutomataStateRule)
+```
 
