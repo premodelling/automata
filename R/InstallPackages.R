@@ -5,7 +5,7 @@
 
 InstallPackages <- function (){
 
-  packages <- c('tidyverse', 'data.table', 'ggplot2', 'rmarkdown', 'rstatix', 'latex2exp')
+  packages <- c('tidyverse', 'data.table', 'ggplot2', 'rmarkdown', 'rstatix', 'latex2exp', 'tufte')
 
   # Install
   .install <- function(x){
