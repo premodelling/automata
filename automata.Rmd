@@ -68,7 +68,7 @@ In the case of elementary cellular automata.  The initial grid is a row vector, 
 
 The exploration of elementary cellular automata is via **(a)** Wolfram's Rule 30, and **(b)** newly created custom rules.^[Rule 30 is decscribed in [Statistical mechanics of cellular automata](https://doi.org/10.1103/RevModPhys.55.601)]
 
-\vspace{10pt}
+\vspace{35pt}
 
 \pagebreak
 
@@ -84,13 +84,11 @@ knitr::include_graphics(path = './images/cell.png', auto_pdf = TRUE)
 
 \vspace{10pt}
 
-Bearing *Fig. 1* in mind, and noting that an elementary automaton cell only has 2 possible states: 0 or 1.  Then there are $2^{3}$ possible combinations of zeros & ones w.r.t. 3 contiguous cells.  These $2^{3}$ state combinations form the reference frame of each elementary cellular automaton rule in this document.  *Table 1* outlines the combination; not that $i$, $j$, and $k$ denote
+Bearing *Fig. 1* in mind, and noting that an elementary automaton cell only has 2 possible states: 0 or 1.  Then there are $2^{3}$ possible combinations of zeros & ones w.r.t. 3 contiguous cells.  These $2^{3}$ state combinations form the reference frame of each elementary cellular automaton rule in this document.  *Table 1* outlines the combination; note that contiguity w.r.t. edge cells is as illustrated in *Fig. 1*, and
 
 * i: the state of the first of three contiguous cells of a row vector.
 * j: the state of the second of three contiguous cells of a row vector.
 * k: the state of the third of three contiguous cells of a row vector.
-
-Contiguity w.r.t. edge cells is as illustrated in *Fig. 1*.
 
 \vspace{10pt}
 
@@ -183,25 +181,40 @@ latest
 
 A row updating function sets the state of an entire new generation row.  There are 2 row updating functions available
 
-* *UpdateRowIndependent( )*: This function does not depend on the external *UpdateCell( )* function.
-* *UpdateRowDependent( )*: This function depends on the *UpdateCell( )* function.
+> *UpdateRowIndependent( )*
+>
+> This function does not depend on the external *UpdateCell( )* function.
 
-Regardless, their results are the same.  Both are tested here via *UpdateTensor( )*, which is used to create a three-row automaton matrix as instructed in the project brief.  In-line with the project brief, the starting row of the three-row matrix is the same as the previously created starting row vector, i.e., it is
+and
 
-```{r comment = '         '}
-tensor
-```
+> *UpdateRowDependent( )*
+>
+> This function depends on the *UpdateCell( )* function.
 
-<!--- the iterations variable --->
+Regardless, their results are the same.  Both are tested here via *UpdateTensor( )*, which is used to create an automaton matrix as instructed in the project brief.  In-line with the project brief,
+
+* the matrix is an *iterations = 3* matrix, i.e., it has 3 rows
+* the starting row is
+
+<!--- iterations --->
 ```{r}
 iterations <- 3
 ```
 
-Setting variable *iterations = 3*, the three-row automaton matrix
+<!--- tensor --->
+```{r comment = '         '}
+tensor
+```
+
+\vspace{10pt}
+
+The following code sections illustrate that the 2 row updating function give the same results.
+
+\pagebreak
 
 \small
 ```{r comment = '         ', echo = TRUE}
-  #  w.r.t. *UpdateRowIndependent( )*
+  #  Setting the state of the cells of a new generation row via UpdateRowIndependent( )
   UpdateTensor(iterations = iterations,
                tensor = tensor,
                FUN = UpdateRowIndependent,
@@ -212,7 +225,7 @@ Setting variable *iterations = 3*, the three-row automaton matrix
 
 
 ```{r comment = '         ', echo = TRUE}
-  # w.r.t. *UpdateRowDependent( )*
+  # Setting the state of the cells of a new generation row via *UpdateRowDependent( )*
   UpdateTensor(iterations = iterations,
                tensor = tensor,
                FUN = UpdateRowDependent,
@@ -256,11 +269,12 @@ Additionally, it requires a starting row vector, and it needs to know the number
 The resulting numeric pattern, stored in variable *pattern*, is
 
 \small
-<!--- the numeric pattern --->
+
 ```{r comment = '                  ', echo = TRUE}
-# Previewing the automaton matrix
-prmatrix(pattern, rowlab = rep('', nrow(pattern)), collab = rep('', ncol(pattern)))
+  # Previewing the automaton matrix
+  prmatrix(pattern, rowlab = rep('', nrow(pattern)), collab = rep('', ncol(pattern)))
 ```
+
 \normalsize
 
 \vspace{35pt}
@@ -269,16 +283,24 @@ prmatrix(pattern, rowlab = rep('', nrow(pattern)), collab = rep('', ncol(pattern
 
 It is easier to observe the pattern of an elementary cellular automaton matrix via an image of the matrix. The image of the preceding automaton matrix is
 
-<!--- the image of the pattern --->
-```{r fig.width = 3, fig.height = 6, fig.align = 'center', out.extra = 'angle=-90'}
-image(pattern, col = c('white', 'black'), axes = FALSE)
+\small
+
+```{r fig.width = 3, fig.height = 6, fig.align = 'center', out.extra = 'angle=-90', echo = TRUE}
+  # The image of cellular automaton 'pattern'
+  image(pattern, col = c('white', 'black'), axes = FALSE)
 ```
 
-\vspace{20pt}
+\normalsize
+
+\pagebreak
 
 ## Random Start
 
 Herein, an exploration of cellular automata due to starting row vectors of randomly placed zeros & ones.  The probability of a zero or one is 0.5 each.  The code below illustrates the creation of automaton matrices due to such starting row vectors; the starting row vector length is $50$, and the number of automaton matrix rows is $25$.
+
+\vspace{10pt}
+
+\small
 
 ```{r echo = TRUE}
 # Creating cellular automata matrices based on starting row vectors with
@@ -291,9 +313,15 @@ N <- 50
 # The starting row vector of randomly placed zeros & ones > tensor
 tensor <- sample(x = 0:1, size = N, replace = TRUE, prob = c('0' = 0.5, '1' = 0.5))
 
-# An automaton matrix named 'randomstart'; 'iterations' is the number of automaton matrix rows.
-randomstart <- AutomataMatrix(iterations = 25, tensor = tensor, FUN = AutomataRule)
+# An automaton matrix named 'randomstart'; 'iterations' is the number
+# of automaton matrix rows.
+randomstart <- AutomataMatrix(iterations = 25,
+                              tensor = tensor,
+                              FUN = AutomataRule)
 ```
+
+\normalsize
+
 
 The resulting image is
 
@@ -301,11 +329,11 @@ The resulting image is
 image(randomstart, col = c('white', 'black'), axes = FALSE)
 ```
 
-\vspace{35pt}
+\pagebreak
 
 # A New Rule
 
-Alternatives, an alternative, to the Rule 30 function *AutomataRule( )*.  Readers have access to three of the tried rules via the functions
+Herein, an alternative - alternatives - to the Rule 30 function *AutomataRule( )*.  Readers have access to three of the tried rules via the functions
 
 * *AutomataStateRule( )*
 * *AutomataRandomRule( )*
@@ -319,9 +347,11 @@ which are listed within the *functions* directory. However, the focus herein is 
 
 The *AutomataStateRule( )* is based on the sum of the 0/1 states of the three cells that dictate the state of a new cell.  It is
 
-$$sum(i, j, k) %% 2$$
+$$sum(i, j, k) mod 2$$
 
-Hence,
+The state of a new generation cell w.r.t. the Automata State Rule, and the reference frame combinations, is outlined in *Table 3*.
+
+\vspace{10pt}
 
 ```{r}
 states <- reference %>%
@@ -335,7 +365,7 @@ knitr::kable(states, caption = 'The state of a new cell w.r.t. Automata State Ru
 
 In addition to a rule, the pattern of an automata matrix, and the richness or peculiarity of the pattern, also depends on the starting row's
 
-* pattern, or otherwise, of zeros & ones
+* pattern of zeros & ones
 * length
 
 Noting that the extent to which a pattern/anything can be discerned depends on the number of automata matrix rows, i.e., the number of iterations.  Hence, herein a rule's automata matrix/image depends on, and is created w.r.t
@@ -347,8 +377,13 @@ Noting that the extent to which a pattern/anything can be discerned depends on t
 
 The *AutomataExperiment( )* function encodes this set-up. Now, an Automata State Rule image example:
 
-
-```{r fig.width = 3, fig.height = 6, fig.align = 'center', out.extra = 'angle=-90'}
-AutomataExperiment(N = 49, prob = c('0' = 0.95, '1' = 0.05), iterations = 25, FUN = AutomataStateRule)
+\small
+```{r fig.width = 3, fig.height = 6, fig.align = 'center', out.extra = 'angle=-90', echo = TRUE}
+  # Trying the AutomataStateRule
+  AutomataExperiment(N = 50,
+                     prob = c('0' = 0.90, '1' = 0.10),
+                     iterations = 25,
+                     FUN = AutomataStateRule)
 ```
 
+\normalsize
