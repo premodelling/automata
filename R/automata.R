@@ -34,7 +34,7 @@ reference %>%
 
 # Testing UpdateCell
 N <- 11
-element <- median(c(1, N))
+element <- floor(median(c(1, N)))
 tensor <- numeric(length = N)
 tensor[element] <- 1
 
@@ -45,8 +45,8 @@ mapply(UpdateCell,
 
 # Testing either
 iterations <- 3
-UpdateTensor(iterations = 3, tensor = tensor, FUN = UpdateRowIndependent)
-UpdateTensor(iterations = 3, tensor = tensor, FUN = UpdateRowDependent)
+UpdateTensor(iterations = 3, tensor = tensor, FUN = UpdateRowIndependent, rule = AutomataRule)
+UpdateTensor(iterations = 3, tensor = tensor, FUN = UpdateRowDependent, rule = AutomataRule)
 
 
 # Testing AutomataMatrix
