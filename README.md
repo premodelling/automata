@@ -2,11 +2,6 @@
 <br>
 
 ## Cellular Automata
-The Cellular Automata Project
 
-<br>
+The Elementary Cellular Automata Project
 
-### Pending
-
-* docstrings
-* transfer the contents of `automata.R` to `automata.Rmd`
