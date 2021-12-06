@@ -347,9 +347,9 @@ which are listed within the *functions* directory. However, the focus herein is 
 
 The *AutomataStateRule( )* is based on the sum of the 0/1 states of the three cells that dictate the state of a new cell.  It is
 
-$$sum(i, j, k) mod 2$$
+$$sum(i, j, k) \; mod \; 2$$
 
-The state of a new generation cell w.r.t. the Automata State Rule, and the reference frame combinations, is outlined in *Table 3*.
+The state of a new generation cell w.r.t. the Automata State Rule, and w.r.t. the reference frame combinations, is outlined in *Table 3*.
 
 \vspace{10pt}
 
